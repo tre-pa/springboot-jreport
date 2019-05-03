@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.jus.tre_pa.jreport.types.JReportGrid;
 import lombok.SneakyThrows;
 
-public class ReportGridToByteConverter implements AttributeConverter<JReportGrid, byte[]> {
+public class JReportGridToByteConverter implements AttributeConverter<JReportGrid, byte[]> {
 
 	@Override
 	@SneakyThrows

@@ -21,7 +21,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import br.jus.tre_pa.jreport.converter.ReportGridToByteConverter;
+import br.jus.tre_pa.jreport.converter.JReportGridToByteConverter;
 import br.jus.tre_pa.jreport.converter.StringToByteConverter;
 import br.jus.tre_pa.jreport.types.JReportGrid;
 import lombok.EqualsAndHashCode;
@@ -93,7 +93,7 @@ public class JReport {
 	 * 
 	 */
 	@Column(nullable = false, columnDefinition = "blob")
-	@Convert(converter = ReportGridToByteConverter.class)
+	@Convert(converter = JReportGridToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
 	private JReportGrid grid;
 
