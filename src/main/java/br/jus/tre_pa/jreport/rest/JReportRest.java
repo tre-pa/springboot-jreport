@@ -33,7 +33,7 @@ import br.jus.tre_pa.jreport.service.JReportService;
  */
 @RestController
 @RequestMapping("/api/jreport")
-class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecification, JReportRepository> {
+public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecification, JReportRepository> {
 
 	@Autowired
 	private JReportService jreportService;
