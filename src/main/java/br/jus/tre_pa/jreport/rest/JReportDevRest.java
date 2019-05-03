@@ -1,6 +1,5 @@
 package br.jus.tre_pa.jreport.rest;
 
-import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,10 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +49,7 @@ class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpecificati
 	 */
 	@GetMapping("/categories")
 	ResponseEntity<Page<String>> findAllCategories(Pageable pageable) {
-		ResponseEntity.ok().body(this.getRepository().findAllCategories());
+		return ResponseEntity.ok().body(this.getRepository().findAllCategories(pageable));
 	}
 
 	/**
@@ -92,32 +88,43 @@ class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpecificati
 	@PostMapping("/preview/datasource")
 	ResponseEntity<?> previewSQL(@RequestBody Map<String, Object> params, Pageable pageable) {
 		if (StringUtils.isEmpty((CharSequence) params.get("sql"))) throw new IllegalArgumentException("SQL não definida na requisição.");
-		return ResponseEntity.ok(jreportService.executeSQL((String) params.get("sql"), pageable, (Filterable) params.get("filter")));
+		return ResponseEntity.ok(jreportService.executeSQL((String) params.get("sql"), pageable.getSort(), (Filterable) params.get("filter")));
 	}
 
-	/**
-	 * Gera uma prévia do PDF 
-	 * 
-	 * @param payload
-	 * @return
-	 */
-	@PostMapping(path = "/preview/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	ResponseEntity<?> previewPDF(@RequestBody Map<String, Object> params, Sort sort) {
-		if(StringUtils.isEmpty(params.sql)) throw new IllegalArgumentException("SQL não definida na requisição.");
-		if(StringUtils.isEmpty(params.gpdf)) throw new IllegalArgumentException("Código Groovy (gpdf) não definido na requisição.");
-		if(params.columns.isEmpty()) throw new IllegalArgumentException("Colunas não definidas na requisição.");
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-Disposition", "inline; filename=preview.pdf" );
-		ByteArrayInputStream bais = jreportService.genGPDF(new JReport(sql:params.sql, gpdf: params.gpdf, grid: new JReportGrid(columns: params.columns)), sort, params.filter);
-		// @formatter:off
-		ResponseEntity
-				.ok()
-				.headers(headers)
-				.contentType(MediaType.APPLICATION_PDF)
-				.body(new InputStreamResource(bais));
-		// @formatter:on
-	}
+//	/**
+//	 * Gera uma prévia do PDF
+//	 * 
+//	 * @param payload
+//	 * @return
+//	 */
+//	@SuppressWarnings("unchecked")
+//	@PostMapping(path = "/preview/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+//	ResponseEntity<?> previewPDF(@RequestBody Map<String, Object> params, Sort sort) {
+//		if (StringUtils.isEmpty((CharSequence) params.get("sql"))) throw new IllegalArgumentException("SQL não definida na requisição.");
+//		if (StringUtils.isEmpty((CharSequence) params.get("gpdf"))) throw new IllegalArgumentException("Código Groovy (gpdf) não definido na requisição.");
+//		if (((List<JReportColumn>) params.get("columns")).isEmpty()) throw new IllegalArgumentException("Colunas não definidas na requisição.");
+//
+//		String sql = (String) params.get("sql");
+//		String gpdf = (String) params.get("gpdf");
+//		
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.add("Content-Disposition", "inline; filename=preview.pdf");
+//		// @formatter:off
+//		ByteArrayInputStream bais = jreportService.genGPDF(
+//				new JReport(
+//						params.get("sql"), 
+//						params.get("gpdf"), 
+//						new JReportGrid(params.columns)), 
+//				sort, 
+//				(Filterable) params.get("filter"));
+//		ResponseEntity
+//				.ok()
+//				.headers(headers)
+//				.contentType(MediaType.APPLICATION_PDF)
+//				.body(new InputStreamResource(bais));
+//		// @formatter:on
+//	}
 
 	/**
 	 * 

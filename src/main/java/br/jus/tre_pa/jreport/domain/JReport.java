@@ -132,4 +132,11 @@ public class JReport {
 	@Column
 	private boolean printOnly = false;
 
+	public JReport(@NotBlank String sql, String gpdf, JReportGrid grid) {
+		super();
+		this.sql = sql;
+		this.grid = grid;
+		this.gpdf = gpdf;
+	}
+
 }

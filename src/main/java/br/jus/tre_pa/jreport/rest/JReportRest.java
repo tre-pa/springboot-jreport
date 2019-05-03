@@ -25,6 +25,12 @@ import br.jus.tre_pa.jreport.repository.JReportRepository;
 import br.jus.tre_pa.jreport.repository.specification.JReportSpecification;
 import br.jus.tre_pa.jreport.service.JReportService;
 
+/**
+ * Classe Rest com endpoints para relatórios.
+ * 
+ * @author jcruz
+ *
+ */
 @RestController
 @RequestMapping("/api/jreport")
 class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecification, JReportRepository> {
@@ -45,16 +51,17 @@ class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecification, 
 	}
 
 	/**
+	 * Retorna o binário (pdf) do relatório.
 	 * 
-	 * @param id
-	 * @return
+	 * @param id Identificador do relatório.
+	 * @return InputStreamResource do pdf.
 	 */
 	@PostMapping(path = "/{id}/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort ,@RequestBody(required=false) Filterable filter) {
-		JReport jreport = this.getRepository().findById(id).orElseThrow (() -> new EntityNotFoundException("Relatório não encontrado: Id="+id) );
+	ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort, @RequestBody(required = false) Filterable filter) {
+		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-Disposition", "inline; filename=report.pdf" );
+		headers.add("Content-Disposition", "inline; filename=report.pdf");
 		ByteArrayInputStream bais = jreportService.genGPDF(jreport, sort, filter);
 		// @formatter:off
 		return ResponseEntity

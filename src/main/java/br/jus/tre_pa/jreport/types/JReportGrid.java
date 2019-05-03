@@ -17,11 +17,7 @@ public class JReportGrid {
 	 *
 	 * Ex:
 	 *
-	 * [{
-	 * 		"dataField" : "nome",
-	 * 		"caption" : "Nome",
-	 * 		"width" : 80
-	 * }]
+	 * [{ "dataField" : "nome", "caption" : "Nome", "width" : 80 }]
 	 *
 	 */
 	List<JReportColumn> columns = new ArrayList<>();
