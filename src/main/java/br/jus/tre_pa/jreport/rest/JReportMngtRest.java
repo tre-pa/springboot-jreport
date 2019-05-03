@@ -29,7 +29,7 @@ import br.jus.tre_pa.jreport.repository.specification.JReportSpecification;
 import br.jus.tre_pa.jreport.service.JReportService;
 
 /**
- * Classe Rest com a API de desenvolvimento de reports.
+ * Classe Rest com a API de gerenciamento de reports.
  * 
  * @author jcruz
  *
