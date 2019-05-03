@@ -24,6 +24,7 @@ import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.JReportRepository;
 import br.jus.tre_pa.jreport.repository.specification.JReportSpecification;
 import br.jus.tre_pa.jreport.service.JReportService;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Classe Rest com endpoints para relatórios.
@@ -31,6 +32,7 @@ import br.jus.tre_pa.jreport.service.JReportService;
  * @author jcruz
  *
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/jreport")
 public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecification, JReportRepository> {
@@ -58,10 +60,11 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 	 */
 	@PostMapping(path = "/{id}/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort, @RequestBody(required = false) Filterable filter) {
+		log.info("Iniciando geração do PDF para o relatório id={}", id);
 		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Content-Disposition", "inline; filename=report.pdf");
+		headers.add("Content-Disposition", String.format("inline; filename=%s.pdf", jreport.getTitle()));
 		ByteArrayInputStream bais = jreportService.genGPDF(jreport, sort, filter);
 		// @formatter:off
 		return ResponseEntity
