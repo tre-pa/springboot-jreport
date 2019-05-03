@@ -111,6 +111,14 @@ public class JReportService {
 		return sqlContext.aggregation(sql, payload);
 	}
 
+	/**
+	 * Executa a cláusula SQL sem paginação. O método é chamado para a função que gera PDF do relatório.
+	 * 
+	 * @param sql    Código SQL válido para execução.
+	 * @param sort   Informações de Sort.
+	 * @param filter Informação de filtragem.
+	 * @return
+	 */
 	public List<Map<String, Object>> executeSQL(String sql, Sort sort, Filterable filter) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (Objects.nonNull(filter)) {
@@ -139,7 +147,7 @@ public class JReportService {
 	 * 
 	 */
 	@SneakyThrows
-	public ByteArrayInputStream genGPDF(JReport jreport,Sort sort, Filterable filter) {
+	public ByteArrayInputStream genGPDF(JReport jreport, Sort sort, Filterable filter) {
 		Binding binding = new Binding();
 		binding.setProperty("report", new JsonSlurper().parseText(new ObjectMapper().writeValueAsString(jreport)));
 		binding.setProperty("jdbcTemplate", jdbcTemplate);
@@ -190,8 +198,7 @@ public class JReportService {
 	public JReportGrid genDefaultGridTemplate(String sql) {
 		JReportGrid grid = new JReportGrid();
 		grid.setColumns(this.genDefaultColumnsTemplate(sql));
-		
-		
+
 		grid.getProperties().put("wordWrapEnabled", true);
 		grid.getProperties().put("showBorders", true);
 		grid.getProperties().put("showRowLines", true);
@@ -217,7 +224,6 @@ public class JReportService {
 		return grid;
 	}
 
-
 	/**
 	 * Gera o template do gpdf baseado nas colunas JReportColumn.
 	 * 
@@ -225,6 +231,7 @@ public class JReportService {
 	 * @return
 	 */
 	public String genDefaultGPDFTemplate() {
+		// @formatter:off
 		String gpdfTemplate = "\n"+
         "import org.springframework.core.io.ClassPathResource\n"+
         "import ar.com.fdvs.dj.domain.ImageBanner;\n"+
@@ -251,6 +258,7 @@ public class JReportService {
         "}\n"+
 		"\n"+
         "def dr = drb.build()\n";
+		// @formatter:on
 		return gpdfTemplate;
 	}
 }
