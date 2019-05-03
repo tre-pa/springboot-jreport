@@ -61,23 +61,23 @@ public class JReport {
 	 * Quando o relatório foi criado.
 	 */
 	@Column(nullable = false, updatable = false)
-	LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
 	/**
 	 * Quando o relatório foi atualizado pela última vez.
 	 */
 	@Column
-	LocalDateTime lastUpdateAt;
+	private LocalDateTime lastUpdateAt;
 
 	/**
 	 * Versão do relatório.
 	 */
 	@Column
 	@Version
-	Integer version;
+	private Integer version;
 
 	@Column
-	UUID uuid;
+	private UUID uuid;
 
 	/**
 	 * Fonte de dados com código SQL nativo.
@@ -86,7 +86,7 @@ public class JReport {
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
 	@NotBlank
-	String sql;
+	private String sql;
 
 	/**
 	 * Defininição do DataGrid do relatório, que possui a definição das colunas do relatório utilizada tanto nos relatórios online quanto no relatórios PDF.
@@ -95,7 +95,7 @@ public class JReport {
 	@Column(nullable = false, columnDefinition = "blob")
 	@Convert(converter = ReportGridToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
-	JReportGrid grid;
+	private JReportGrid grid;
 
 	/**
 	 * Código groovy do relatório em DynamicJasper.
@@ -104,32 +104,32 @@ public class JReport {
 	@Column(name = "GPDF", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
-	String gpdf;
+	private String gpdf;
 
 	@Column(name = "GEXCEL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
-	String gexcel;
+	private String gexcel;
 
 	/**
 	 * Categoria do relatório.
 	 */
 	@Column(nullable = false)
 	@NotBlank
-	String category;
+	private String category;
 
 	/**
 	 * Flag informando se o relatório está disponível apenas aos gerentes.
 	 * 
 	 */
 	@Column
-	boolean mngtOnly = true;
+	private boolean mngtOnly = true;
 
 	/**
 	 * Flag informando se o relatório está disponível apenas para impressão.
 	 * 
 	 */
 	@Column
-	boolean printOnly = false;
+	private boolean printOnly = false;
 
 }

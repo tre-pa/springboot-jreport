@@ -6,6 +6,6 @@ import br.jus.tre_pa.datafilter.jpa.AbstractSpecification;
 import br.jus.tre_pa.jreport.domain.JReport;
 
 @Component
-class JReportSpecification extends AbstractSpecification<JReport> {
+public class JReportSpecification extends AbstractSpecification<JReport> {
 
 }
