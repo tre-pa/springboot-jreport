@@ -111,7 +111,7 @@ public class JReportService {
 		return sqlContext.aggregation(sql, payload);
 	}
 
-	private List<Map<String, Object>> executeSQL(String sql, Sort sort, Filterable filter) {
+	public List<Map<String, Object>> executeSQL(String sql, Sort sort, Filterable filter) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (Objects.nonNull(filter)) {
 			// @formatter:off
@@ -187,7 +187,7 @@ public class JReportService {
 		return columns;
 	}
 
-	JReportGrid genDefaultGridTemplate(String sql) {
+	public JReportGrid genDefaultGridTemplate(String sql) {
 		JReportGrid grid = new JReportGrid();
 		grid.setColumns(this.genDefaultColumnsTemplate(sql));
 		
@@ -224,7 +224,7 @@ public class JReportService {
 	 * @param columns
 	 * @return
 	 */
-	String genDefaultGPDFTemplate() {
+	public String genDefaultGPDFTemplate() {
 		String gpdfTemplate = "\n"+
         "import org.springframework.core.io.ClassPathResource\n"+
         "import ar.com.fdvs.dj.domain.ImageBanner;\n"+
