@@ -15,12 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -31,10 +28,9 @@ import br.jus.tre_pa.datafilter.Page;
 import br.jus.tre_pa.datafilter.Payload;
 import br.jus.tre_pa.datafilter.sql.SqlContext;
 import br.jus.tre_pa.jreport.JReportStyles;
+import br.jus.tre_pa.jreport.JReportTemplate;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.JReportRepository;
-import br.jus.tre_pa.jreport.types.JReportColumn;
-import br.jus.tre_pa.jreport.types.JReportGrid;
 import groovy.json.JsonSlurper;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -55,18 +51,21 @@ public class JReportService {
 
 	@Autowired
 	private SqlContext sqlContext;
+	
+	@Autowired
+	private JReportTemplate template;
 
 	/**
 	 * Salva um novo report.
 	 * 
-	 * @param jreport
+	 * @param jreport Instância do jreport.
 	 * @return
 	 */
 	public JReport insert(JReport jreport) {
 		jreport.setCreatedAt(LocalDateTime.now());
 		jreport.setUuid(UUID.randomUUID());
-		if (jreport.getGrid() == null) jreport.setGrid(this.genDefaultGridTemplate(jreport.getSql()));
-		if (StringUtils.isEmpty(jreport.getGpdf())) jreport.setGpdf(this.genDefaultGPDFTemplate());
+		if (jreport.getGrid() == null) jreport.setGrid(template.genDefaultGridTemplate(jreport.getSql()));
+		if (StringUtils.isEmpty(jreport.getGpdf())) jreport.setGpdf(template.genDefaultGPDFTemplate());
 		if (StringUtils.isEmpty(jreport.getGexcel())) jreport.setGexcel("excel");
 		return this.jreportRepository.save(jreport);
 	}
@@ -74,7 +73,7 @@ public class JReportService {
 	/**
 	 * Atualiza um report.
 	 * 
-	 * @param jreport
+	 * @param jreportInstância do jreport.
 	 * @return
 	 */
 	public JReport update(JReport jreport) {
@@ -83,7 +82,7 @@ public class JReportService {
 	}
 
 	/**
-	 * Executa a consulta SQL.
+	 * Executa a consulta SQL com paginação.
 	 * 
 	 * @param id
 	 * @return
@@ -174,91 +173,5 @@ public class JReportService {
 		return bais;
 	}
 
-	/**
-	 * Gera o template da coluna baseado em uma consuta SQL.
-	 * 
-	 * @param sql
-	 * @return
-	 */
-	public List<JReportColumn> genDefaultColumnsTemplate(String sql) {
-		SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql);
-		List<JReportColumn> columns = new ArrayList<>();
-		String[] columnNames = sqlRowSet.getMetaData().getColumnNames();
-		for (int i = 0; i < columnNames.length; i++) {
-			JReportColumn column = new JReportColumn();
-			column.setDataField(columnNames[i]);
-			column.setCaption(columnNames[i]);
-			column.setDataType(JReportColumn.toTypescriptType(sqlRowSet.getMetaData().getColumnType(i + 1)));
-			column.setJavaType(JReportColumn.toJavaType(sqlRowSet.getMetaData().getColumnType(i + 1)).getName());
-			columns.add(column);
-		}
-		return columns;
-	}
-
-	public JReportGrid genDefaultGridTemplate(String sql) {
-		JReportGrid grid = new JReportGrid();
-		grid.setColumns(this.genDefaultColumnsTemplate(sql));
-
-		grid.getProperties().put("wordWrapEnabled", true);
-		grid.getProperties().put("showBorders", true);
-		grid.getProperties().put("showRowLines", true);
-		grid.getProperties().put("showColumnLines", false);
-		// @formatter:off
-		grid.getProperties().put("sorting", Lists.newArrayList(ImmutableMap.builder()
-				.put("mode", "multiple")));
-		grid.getProperties().put("paging", Lists.newArrayList(ImmutableMap.builder()
-				.put("pageSize", 5)));
-		grid.getProperties().put("pager", Lists.newArrayList(ImmutableMap.builder()
-				.put("allowedPageSizes", Lists.newArrayList(5,10,20))
-				.put("showNavigationButtons", true)
-				.put("showPageSizeSelector", true)
-				.put("showInfo", true)));
-		grid.getProperties().put("filterRow", Lists.newArrayList(ImmutableMap.builder()
-				.put("visible", true)));
-		grid.getProperties().put("headerFilter", Lists.newArrayList(ImmutableMap.builder()
-				.put("visible", true)));
-		grid.getProperties().put("searchPanel", Lists.newArrayList(ImmutableMap.builder()
-				.put("visible", true)
-				.put("width", 300)));
-		// @formatter:on
-		return grid;
-	}
-
-	/**
-	 * Gera o template do gpdf baseado nas colunas JReportColumn.
-	 * 
-	 * @param columns
-	 * @return
-	 */
-	public String genDefaultGPDFTemplate() {
-		// @formatter:off
-		String gpdfTemplate = "\n"+
-        "import org.springframework.core.io.ClassPathResource\n"+
-        "import ar.com.fdvs.dj.domain.ImageBanner;\n"+
-        "import ar.com.fdvs.dj.domain.builders.ColumnBuilder\n"+
-        "import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder\n"+
-		"\n"+
-        "def drb = new DynamicReportBuilder()\n"+
-		"\n"+
-        "drb.title = report.title\n"+
-        "drb.subtitle = report.subtitle\n"+
-        "drb.useFullPageWidth = true\n"+
-		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica.png\").getPath(), new Integer(50), new Integer(50), ImageBanner.ALIGN_CENTER);\n"+
-		"drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
-		"\n"+
-        "def columns = [:]\n"+
-		"\n"+
-        "report.grid.columns.each {\n"+ 
-            "columns[it.dataField] = ColumnBuilder.new\n"+
-                ".setColumnProperty(it.dataField, it.javaType)\n"+
-                ".setTitle(it.caption)\n"+
-                ".setWidth(it.width)\n"+
-                ".build()\n"+
-            "drb.addColumn(columns[it.dataField])\n"+
-        "}\n"+
-		"\n"+
-        "def dr = drb.build()\n";
-		// @formatter:on
-		return gpdfTemplate;
-	}
+	
 }

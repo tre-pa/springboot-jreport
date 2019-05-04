@@ -1,6 +1,8 @@
 package br.jus.tre_pa.jreport.rest;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.jus.tre_pa.datafilter.Filterable;
+import br.jus.tre_pa.datafilter.Page;
 import br.jus.tre_pa.datafilter.Payload;
 import br.jus.tre_pa.datafilter.rest.AbstractCrudRest;
 import br.jus.tre_pa.jreport.domain.JReport;
@@ -47,19 +50,19 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 	 * @return
 	 */
 	@PostMapping("/{id}/datasource")
-	ResponseEntity<?> executeSQL(@PathVariable Long id, Pageable pageable, @RequestBody(required = false) Payload payload) {
+	public ResponseEntity<Page<List<Map<String, Object>>>> executeSQL(@PathVariable Long id, Pageable pageable, @RequestBody(required = false) Payload payload) {
 		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 		return ResponseEntity.ok(jreportService.executeSQLPageable(jreport.getSql(), pageable, payload));
 	}
 
 	/**
-	 * Retorna o binário (pdf) do relatório.
+	 * Retorna o binário (pdf) do relatório. o endpoint aceita
 	 * 
 	 * @param id Identificador do relatório.
 	 * @return InputStreamResource do pdf.
 	 */
 	@PostMapping(path = "/{id}/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort, @RequestBody(required = false) Filterable filter) {
+	public ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort, @RequestBody(required = false) Filterable filter) {
 		log.info("Iniciando geração do PDF para o relatório id={}", id);
 		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 

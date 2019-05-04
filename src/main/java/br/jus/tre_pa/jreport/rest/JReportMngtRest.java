@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.jus.tre_pa.datafilter.Filterable;
 import br.jus.tre_pa.datafilter.rest.AbstractCrudRest;
+import br.jus.tre_pa.jreport.JReportTemplate;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.JReportRepository;
 import br.jus.tre_pa.jreport.repository.specification.JReportSpecification;
@@ -39,7 +40,10 @@ import br.jus.tre_pa.jreport.service.JReportService;
 public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpecification, JReportRepository> {
 
 	@Autowired
-	JReportService jreportService;
+	private JReportService jreportService;
+	
+	@Autowired
+	private JReportTemplate template;
 
 	/**
 	 * Retorna a lista paginada de categories
@@ -48,7 +52,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return
 	 */
 	@GetMapping("/categories")
-	ResponseEntity<Page<String>> findAllCategories(Pageable pageable) {
+	public ResponseEntity<Page<String>> findAllCategories(Pageable pageable) {
 		return ResponseEntity.ok().body(this.getRepository().findAllCategories(pageable));
 	}
 
@@ -86,7 +90,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return
 	 */
 	@PostMapping("/preview/datasource")
-	ResponseEntity<?> previewSQL(@RequestBody Map<String, Object> params, Pageable pageable) {
+	public ResponseEntity<?> previewSQL(@RequestBody Map<String, Object> params, Pageable pageable) {
 		if (StringUtils.isEmpty((CharSequence) params.get("sql"))) throw new IllegalArgumentException("SQL não definida na requisição.");
 		return ResponseEntity.ok(jreportService.executeSQL((String) params.get("sql"), pageable.getSort(), (Filterable) params.get("filter")));
 	}
@@ -132,9 +136,9 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return
 	 */
 	@PostMapping("/grid/template")
-	ResponseEntity<?> genDefaultGridTemplate(@RequestBody JReport jreport) {
+	public ResponseEntity<?> genDefaultGridTemplate(@RequestBody JReport jreport) {
 		if (StringUtils.isEmpty(jreport.getSql())) throw new IllegalArgumentException("SQL não definida na requisição.");
-		return ResponseEntity.ok(jreportService.genDefaultGridTemplate(jreport.getSql()));
+		return ResponseEntity.ok(template.genDefaultGridTemplate(jreport.getSql()));
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return
 	 */
 	@GetMapping("/gpdf/template")
-	ResponseEntity<?> genDefaultGPDFTemplate() {
-		return ResponseEntity.ok(jreportService.genDefaultGPDFTemplate());
+	public ResponseEntity<?> genDefaultGPDFTemplate() {
+		return ResponseEntity.ok(template.genDefaultGPDFTemplate());
 	}
 }
