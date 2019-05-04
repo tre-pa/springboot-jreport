@@ -80,7 +80,7 @@ public class JReport {
 	private UUID uuid;
 
 	/**
-	 * Fonte de dados com código SQL nativo.
+	 * Código SQL nativo para geração do datasource.
 	 */
 	@Column(name = "SQL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
