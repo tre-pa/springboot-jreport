@@ -114,6 +114,7 @@ public class JReportTemplate {
         "drb.rightMargin = new Integer(20)\n"+
         "drb.oddRowBackgroundStyle = JReportStyles.oddRowStyle\n"+
         "drb.printBackgroundOnOddRows = true\n"+
+        "drb.setWhenNoData(\"Sem registros na base de dados.\", null)\n"+
         "drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
 		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica-report-header.png\").getPath(), new Integer(90), new Integer(40), ImageBanner.ALIGN_CENTER, ImageScaleMode.REAL_SIZE  );\n"+
 		"drb.addAutoText(CREATED_AT, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_LEFT, 200, JReportStyles.footerTextStyle)\n"+
