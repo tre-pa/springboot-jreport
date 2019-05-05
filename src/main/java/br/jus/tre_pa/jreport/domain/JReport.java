@@ -26,6 +26,7 @@ import br.jus.tre_pa.jreport.converter.StringToByteConverter;
 import br.jus.tre_pa.jreport.types.JReportGrid;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -36,6 +37,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = { "id" })
 @Getter
 @Setter
+@NoArgsConstructor
 public class JReport {
 
 	@Id

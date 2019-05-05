@@ -56,27 +56,34 @@ public class JReportTemplate {
 		JReportGrid grid = new JReportGrid();
 		grid.setColumns(this.genDefaultColumnsTemplate(sql));
 
+		
 		grid.getProperties().put("wordWrapEnabled", true);
 		grid.getProperties().put("showBorders", true);
 		grid.getProperties().put("showRowLines", true);
 		grid.getProperties().put("showColumnLines", false);
 		// @formatter:off
 		grid.getProperties().put("sorting", Lists.newArrayList(ImmutableMap.builder()
-				.put("mode", "multiple")));
+				.put("mode", "multiple")
+				.build()));
 		grid.getProperties().put("paging", Lists.newArrayList(ImmutableMap.builder()
-				.put("pageSize", 5)));
+				.put("pageSize", 5)
+				.build()));
 		grid.getProperties().put("pager", Lists.newArrayList(ImmutableMap.builder()
 				.put("allowedPageSizes", Lists.newArrayList(5,10,20))
 				.put("showNavigationButtons", true)
 				.put("showPageSizeSelector", true)
-				.put("showInfo", true)));
+				.put("showInfo", true)
+				.build()));
 		grid.getProperties().put("filterRow", Lists.newArrayList(ImmutableMap.builder()
-				.put("visible", true)));
+				.put("visible", true)
+				.build()));
 		grid.getProperties().put("headerFilter", Lists.newArrayList(ImmutableMap.builder()
-				.put("visible", true)));
+				.put("visible", true)
+				.build()));
 		grid.getProperties().put("searchPanel", Lists.newArrayList(ImmutableMap.builder()
 				.put("visible", true)
-				.put("width", 300)));
+				.put("width", 300)
+				.build()));
 		// @formatter:on
 		return grid;
 	}
@@ -106,12 +113,12 @@ public class JReportTemplate {
         "def columns = [:]\n"+
 		"\n"+
         "report.grid.columns.each {\n"+ 
-            "columns[it.dataField] = ColumnBuilder.new\n"+
-                ".setColumnProperty(it.dataField, it.javaType)\n"+
-                ".setTitle(it.caption)\n"+
-                ".setWidth(it.width)\n"+
-                ".build()\n"+
-            "drb.addColumn(columns[it.dataField])\n"+
+            "\tcolumns[it.dataField] = ColumnBuilder.new\n"+
+                "\t\t.setColumnProperty(it.dataField, it.javaType)\n"+
+                "\t\t.setTitle(it.caption)\n"+
+                "\t\t.setWidth(it.width)\n"+
+                "\t\t.build()\n"+
+            "\tdrb.addColumn(columns[it.dataField])\n"+
         "}\n"+
 		"\n"+
         "def dr = drb.build()\n";

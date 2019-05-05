@@ -35,11 +35,13 @@ import groovy.json.JsonSlurper;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.ListOfArrayDataSource;
 
+@Slf4j
 @Service
 public class JReportService {
 
@@ -147,12 +149,14 @@ public class JReportService {
 	 */
 	@SneakyThrows
 	public ByteArrayInputStream genGPDF(JReport jreport, Sort sort, Filterable filter) {
+		log.info("Iniciando geração do relatório PDF '{}'", jreport.getTitle());
 		Binding binding = new Binding();
 		binding.setProperty("report", new JsonSlurper().parseText(new ObjectMapper().writeValueAsString(jreport)));
 		binding.setProperty("jdbcTemplate", jdbcTemplate);
 		binding.setProperty("JReportStyles", JReportStyles.class);
 		GroovyShell groovyShell = new GroovyShell(binding);
 		List<Map<String, Object>> sqlResult = executeSQL(jreport.getSql(), sort, filter);
+		log.debug("sqlResult com {} registros.", sqlResult.size());
 		// @formatter:off
 		List<Object[]> records = sqlResult
 				.stream()
