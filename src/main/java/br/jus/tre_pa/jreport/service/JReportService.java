@@ -2,8 +2,10 @@ package br.jus.tre_pa.jreport.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -154,6 +156,7 @@ public class JReportService {
 		binding.setProperty("report", new JsonSlurper().parseText(new ObjectMapper().writeValueAsString(jreport)));
 		binding.setProperty("jdbcTemplate", jdbcTemplate);
 		binding.setProperty("JReportStyles", JReportStyles.class);
+		binding.setProperty("CREATED_AT", String.format("<i>Gerado em %s</i>", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date())));
 		GroovyShell groovyShell = new GroovyShell(binding);
 		List<Map<String, Object>> sqlResult = executeSQL(jreport.getSql(), sort, filter);
 		log.debug("sqlResult com {} registros.", sqlResult.size());

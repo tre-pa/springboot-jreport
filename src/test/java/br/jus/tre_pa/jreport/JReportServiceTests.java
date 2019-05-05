@@ -44,33 +44,35 @@ public class JReportServiceTests {
 	@Autowired
 	private JReportTemplate reportTemplate;
 
-
 	@Test
 	@Transactional
 	public void genPdfTest() throws IOException {
-		Foo foo = new Foo();
-		foo.setId(1L);
-		foo.setName("Fulano1");
-		entityManager.persist(foo);
-		
+		for (int i = 1; i < 100; i++) {
+			Foo foo = new Foo();
+			foo.setId(Long.valueOf(i));
+			foo.setName("Fulano"+i);
+			entityManager.persist(foo);
+		}
+
 		System.out.println("1111111111111111");
 
 		String SQL = "SELECT * FROM FOO";
 		JReport report = new JReport(SQL, reportTemplate.genDefaultGPDFTemplate(), reportTemplate.genDefaultGridTemplate(SQL));
 		report.setCreatedAt(LocalDateTime.now());
-		report.setTitle("Example");
+		report.setTitle("Relatório de Relatório");
+		report.setSubtitle("Seção de Desenvolvimento de Sistemas");
 		report.setCategory("A1");
 		report.setGexcel("excel");
 		entityManager.persist(report);
 		entityManager.flush();
-		
+
 		System.out.println("22222222222222222");
-		
+
 		ByteArrayInputStream bais = reportService.genGPDF(report, null, null);
 		byte[] buffer = ByteStreams.toByteArray(bais);
-		
+
 		System.out.println("33333333333333333");
-		
+
 		FileOutputStream fos = new FileOutputStream(new File("target/report.pdf"));
 		fos.write(buffer);
 		fos.flush();

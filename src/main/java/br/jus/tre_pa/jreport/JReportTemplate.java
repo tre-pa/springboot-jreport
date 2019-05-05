@@ -97,18 +97,28 @@ public class JReportTemplate {
 	public String genDefaultGPDFTemplate() {
 		// @formatter:off
 		String gpdfTemplate = "\n"+
-        "import org.springframework.core.io.ClassPathResource\n"+
+        "import org.springframework.core.io.ClassPathResource;\n"+
         "import ar.com.fdvs.dj.domain.ImageBanner;\n"+
-        "import ar.com.fdvs.dj.domain.builders.ColumnBuilder\n"+
-        "import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder\n"+
+        "import ar.com.fdvs.dj.domain.builders.ColumnBuilder;\n"+
+        "import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;\n"+
+        "import ar.com.fdvs.dj.domain.AutoText;\n"+
+        "import ar.com.fdvs.dj.domain.constants.ImageScaleMode;\n"+
+        "import java.util.Locale;\n"+
 		"\n"+
         "def drb = new DynamicReportBuilder()\n"+
 		"\n"+
         "drb.title = report.title\n"+
         "drb.subtitle = report.subtitle\n"+
-        "drb.useFullPageWidth = true\n"+
-		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica.png\").getPath(), new Integer(50), new Integer(50), ImageBanner.ALIGN_CENTER);\n"+
-		"drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
+        "drb.useFullPageWidth = true\n"+ 
+        "drb.leftMargin = new Integer(20)\n"+
+        "drb.rightMargin = new Integer(20)\n"+
+        "drb.oddRowBackgroundStyle = JReportStyles.oddRowStyle\n"+
+        "drb.printBackgroundOnOddRows = true\n"+
+        "drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
+		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica-report-header.png\").getPath(), new Integer(90), new Integer(40), ImageBanner.ALIGN_CENTER, ImageScaleMode.REAL_SIZE  );\n"+
+		"drb.addAutoText(CREATED_AT, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_LEFT, 200, JReportStyles.footerTextStyle)\n"+
+		"drb.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT, 10,30, JReportStyles.footerTextStyle);\n"+
+		"drb.setReportLocale(new Locale(\"pt\",\"BR\"));\n"+
 		"\n"+
         "def columns = [:]\n"+
 		"\n"+

@@ -14,21 +14,22 @@ public class JReportStyles {
 	
 	public static Style titleStyle = new StyleBuilder(true)
 		.setHorizontalAlign(HorizontalAlign.CENTER)
-		.setFont(new Font(18, null, true))
+		.setFont(new Font(14, Font._FONT_TIMES_NEW_ROMAN, true))
+		.setPaddingBottom(5)
 		.build();
 
 	public static Style subtitleStyle = new StyleBuilder(true)
 		.setHorizontalAlign(HorizontalAlign.CENTER)
-		.setFont(new Font(Font.MEDIUM, null, true))
-		.setPaddingBottom(20)
+		.setFont(Font.TIMES_NEW_ROMAN_MEDIUM)
+		.setPaddingTop(-10)
+		.setPaddingBottom(10)
 		.build();
 
 	
 	public static Style columnHeaderStyle = new StyleBuilder(true)
 		.setTextColor(Color.black)
-		.setFont(Font.ARIAL_MEDIUM_BOLD)
-		.setBorderTop(Border.PEN_1_POINT())
-		.setBorderBottom(Border.PEN_1_POINT())
+		.setFont(Font.TIMES_NEW_ROMAN_MEDIUM_BOLD)
+		.setBorder(Border.THIN())
 		.setHorizontalAlign(HorizontalAlign.CENTER)
 		.setVerticalAlign(VerticalAlign.MIDDLE)
 		.build();
@@ -36,7 +37,9 @@ public class JReportStyles {
 	public static Style columnDetailStyle = new StyleBuilder(true)
 		.setVerticalAlign(VerticalAlign.TOP)
 		.setTextColor(Color.black)
-		.setBorder(Border.NO_BORDER())
+		.setFont(new Font(10, Font._FONT_TIMES_NEW_ROMAN, false))
+		.setBorder(Border.THIN())
+		.setBorderColor(Color.DARK_GRAY)
 		.setHorizontalAlign(HorizontalAlign.CENTER)
 		.setVerticalAlign(VerticalAlign.MIDDLE)
 		.build();
@@ -122,4 +125,8 @@ public class JReportStyles {
 		.setBackgroundColor(Color.LIGHT_GRAY)
 		.setTransparency(Transparency.OPAQUE)
 		.build();
+	
+	public static Style footerTextStyle = new StyleBuilder(true)
+			.setFont(Font.TIMES_NEW_ROMAN_SMALL)
+			.build();
 }
