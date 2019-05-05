@@ -68,7 +68,7 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", String.format("inline; filename=%s.pdf", jreport.getTitle()));
-		ByteArrayInputStream bais = jreportService.genGPDF(jreport, sort, filter);
+		ByteArrayInputStream bais = jreportService.genGpdf(jreport, sort, filter);
 		// @formatter:off
 		return ResponseEntity
 				.ok()

@@ -42,6 +42,10 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.ListOfArrayDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 @Slf4j
 @Service
@@ -55,7 +59,7 @@ public class JReportService {
 
 	@Autowired
 	private SqlContext sqlContext;
-	
+
 	@Autowired
 	private JReportTemplate template;
 
@@ -69,7 +73,7 @@ public class JReportService {
 		jreport.setCreatedAt(LocalDateTime.now());
 		jreport.setUuid(UUID.randomUUID());
 		if (jreport.getGrid() == null) jreport.setGrid(template.genDefaultGridTemplate(jreport.getSql()));
-		if (StringUtils.isEmpty(jreport.getGpdf())) jreport.setGpdf(template.genDefaultGPDFTemplate());
+		if (StringUtils.isEmpty(jreport.getGpdf())) jreport.setGpdf(template.genDefaultGpdfTemplate());
 		if (StringUtils.isEmpty(jreport.getGexcel())) jreport.setGexcel("excel");
 		return this.jreportRepository.save(jreport);
 	}
@@ -150,7 +154,7 @@ public class JReportService {
 	 * 
 	 */
 	@SneakyThrows
-	public ByteArrayInputStream genGPDF(JReport jreport, Sort sort, Filterable filter) {
+	public ByteArrayInputStream genGpdf(JReport jreport, Sort sort, Filterable filter) {
 		log.info("Iniciando geração do relatório PDF '{}'", jreport.getTitle());
 		Binding binding = new Binding();
 		binding.setProperty("report", new JsonSlurper().parseText(new ObjectMapper().writeValueAsString(jreport)));
@@ -180,5 +184,47 @@ public class JReportService {
 		return bais;
 	}
 
-	
+	@SneakyThrows
+	public ByteArrayInputStream genGexcel(JReport jreport, Sort sort, Filterable filter) {
+		log.info("Iniciando geração do relatório EXCEL '{}'", jreport.getTitle());
+		Binding binding = new Binding();
+		binding.setProperty("report", new JsonSlurper().parseText(new ObjectMapper().writeValueAsString(jreport)));
+		binding.setProperty("jdbcTemplate", jdbcTemplate);
+		binding.setProperty("JReportStyles", JReportStyles.class);
+		GroovyShell groovyShell = new GroovyShell(binding);
+		List<Map<String, Object>> sqlResult = executeSQL(jreport.getSql(), sort, filter);
+		log.debug("sqlResult com {} registros.", sqlResult.size());
+
+		// @formatter:off
+		List<Object[]> records = sqlResult
+				.stream()
+				.map ( row -> row.values().toArray())
+				.collect(Collectors.toList());
+		String[] columnNames = jreport.getGrid().getColumns()
+				.stream()
+				.map ( it -> it.getDataField() )
+				.toArray(String[]::new);
+		// @formatter:on
+		DynamicReport dynamicReport = (DynamicReport) groovyShell.evaluate(jreport.getGexcel());
+		JRDataSource ds = new ListOfArrayDataSource(records, columnNames);
+		JasperPrint jp = DynamicJasperHelper.generateJasperPrint(dynamicReport, new ClassicLayoutManager(), ds);
+		JRXlsExporter exporter = new JRXlsExporter();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		exporter.setExporterInput(new SimpleExporterInput(jp));
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos));
+		
+		SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
+        xlsReportConfiguration.setOnePagePerSheet(false);
+        xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
+        xlsReportConfiguration.setDetectCellType(false);
+        xlsReportConfiguration.setWhitePageBackground(false);
+        exporter.setConfiguration(xlsReportConfiguration);
+        
+        exporter.exportReport();
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		return bais;
+	}
+
 }

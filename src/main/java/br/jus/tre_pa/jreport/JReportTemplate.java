@@ -27,7 +27,7 @@ public class JReportTemplate {
 	private JdbcTemplate jdbcTemplate;
 	
 	/**
-	 * Gera o template da coluna (Lista de JReportColumn) baseado na consuta SQL.
+	 * Gera o template das colunas do relatório (Lista de JReportColumn) baseado na consuta SQL.
 	 * 
 	 * @param sql
 	 * @return
@@ -89,12 +89,12 @@ public class JReportTemplate {
 	}
 
 	/**
-	 * Gera o template do gpdf baseado nas colunas JReportColumn.
+	 * Gera o template do código groovy que gera o arquivo PDF.
 	 * 
 	 * @param columns
 	 * @return
 	 */
-	public String genDefaultGPDFTemplate() {
+	public String genDefaultGpdfTemplate() {
 		// @formatter:off
 		String gpdfTemplate = "\n"+
         "import org.springframework.core.io.ClassPathResource;\n"+
@@ -135,5 +135,46 @@ public class JReportTemplate {
         "def dr = drb.build()\n";
 		// @formatter:on
 		return gpdfTemplate;
+	}
+	
+	public String genDefaultGexcelTemplate() {
+		// @formatter:off
+		String gexcelTemplate = "\n"+
+        "import ar.com.fdvs.dj.domain.builders.ColumnBuilder;\n"+
+        "import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;\n"+
+        "import java.util.Locale;\n"+
+		"\n"+
+        "def drb = new DynamicReportBuilder()\n"+
+		"\n"+
+        "drb.title = report.title\n"+
+        "drb.subtitle = report.subtitle\n"+
+        "drb.useFullPageWidth = true\n"+ 
+        "drb.setPrintColumnNames(true)\n"+
+        "drb.setIgnorePagination(true)\n"+
+//        "drb.leftMargin = new Integer(20)\n"+
+//        "drb.rightMargin = new Integer(20)\n"+
+//        "drb.oddRowBackgroundStyle = JReportStyles.oddRowStyle\n"+
+//        "drb.printBackgroundOnOddRows = true\n"+
+        "drb.setWhenNoData(\"Sem registros na base de dados.\", null)\n"+
+//        "drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
+//		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica-report-header.png\").getPath(), new Integer(90), new Integer(40), ImageBanner.ALIGN_CENTER, ImageScaleMode.REAL_SIZE  );\n"+
+//		"drb.addAutoText(CREATED_AT, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_LEFT, 200, JReportStyles.footerTextStyle)\n"+
+//		"drb.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT, 10,30, JReportStyles.footerTextStyle);\n"+
+		"drb.setReportLocale(new Locale(\"pt\",\"BR\"));\n"+
+		"\n"+
+        "def columns = [:]\n"+
+		"\n"+
+        "report.grid.columns.each {\n"+ 
+            "\tcolumns[it.dataField] = ColumnBuilder.new\n"+
+                "\t\t.setColumnProperty(it.dataField, it.javaType)\n"+
+                "\t\t.setTitle(it.caption)\n"+
+                "\t\t.setWidth(it.width)\n"+
+                "\t\t.build()\n"+
+            "\tdrb.addColumn(columns[it.dataField])\n"+
+        "}\n"+
+		"\n"+
+        "def dr = drb.build()\n";
+		// @formatter:on
+		return gexcelTemplate;
 	}
 }

@@ -57,7 +57,7 @@ public class JReportServiceTests {
 		System.out.println("1111111111111111");
 
 		String SQL = "SELECT * FROM FOO";
-		JReport report = new JReport(SQL, reportTemplate.genDefaultGPDFTemplate(), reportTemplate.genDefaultGridTemplate(SQL));
+		JReport report = new JReport(SQL, reportTemplate.genDefaultGpdfTemplate(), reportTemplate.genDefaultGridTemplate(SQL));
 		report.setCreatedAt(LocalDateTime.now());
 		report.setTitle("Relatório de Relatório");
 		report.setSubtitle("Seção de Desenvolvimento de Sistemas");
@@ -68,12 +68,49 @@ public class JReportServiceTests {
 
 		System.out.println("22222222222222222");
 
-		ByteArrayInputStream bais = reportService.genGPDF(report, null, null);
+		ByteArrayInputStream bais = reportService.genGpdf(report, null, null);
 		byte[] buffer = ByteStreams.toByteArray(bais);
 
 		System.out.println("33333333333333333");
 
 		FileOutputStream fos = new FileOutputStream(new File("target/report.pdf"));
+		fos.write(buffer);
+		fos.flush();
+		fos.close();
+
+		fooRepository.deleteAll();
+	}
+	
+	@Test
+	@Transactional
+	public void genExcelTest() throws IOException {
+		for (int i = 1; i < 100; i++) {
+			Foo foo = new Foo();
+			foo.setId(Long.valueOf(i));
+			foo.setName("Fulano"+i);
+			entityManager.persist(foo);
+		}
+
+		System.out.println("1111111111111111");
+
+		String SQL = "SELECT * FROM FOO";
+		JReport report = new JReport(SQL, reportTemplate.genDefaultGpdfTemplate(), reportTemplate.genDefaultGridTemplate(SQL));
+		report.setCreatedAt(LocalDateTime.now());
+		report.setTitle("Relatório de Relatório");
+		report.setSubtitle("Seção de Desenvolvimento de Sistemas");
+		report.setCategory("A1");
+		report.setGexcel(reportTemplate.genDefaultGexcelTemplate());
+		entityManager.persist(report);
+		entityManager.flush();
+
+		System.out.println("22222222222222222");
+
+		ByteArrayInputStream bais = reportService.genGexcel(report, null, null);
+		byte[] buffer = ByteStreams.toByteArray(bais);
+
+		System.out.println("33333333333333333");
+
+		FileOutputStream fos = new FileOutputStream(new File("target/report.xls"));
 		fos.write(buffer);
 		fos.flush();
 		fos.close();

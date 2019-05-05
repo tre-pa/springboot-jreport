@@ -147,6 +147,6 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 */
 	@GetMapping("/gpdf/template")
 	public ResponseEntity<?> genDefaultGPDFTemplate() {
-		return ResponseEntity.ok(template.genDefaultGPDFTemplate());
+		return ResponseEntity.ok(template.genDefaultGpdfTemplate());
 	}
 }
