@@ -22,10 +22,10 @@ import br.jus.tre_pa.jreport.types.JReportGrid;
  */
 @Component
 public class JReportTemplate {
-	
+
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	
+
 	/**
 	 * Gera o template das colunas do relatório (Lista de JReportColumn) baseado na consuta SQL.
 	 * 
@@ -46,7 +46,7 @@ public class JReportTemplate {
 		}
 		return columns;
 	}
-	
+
 	/**
 	 * 
 	 * @param sql
@@ -56,7 +56,6 @@ public class JReportTemplate {
 		JReportGrid grid = new JReportGrid();
 		grid.setColumns(this.genDefaultColumnsTemplate(sql));
 
-		
 		grid.getProperties().put("wordWrapEnabled", true);
 		grid.getProperties().put("showBorders", true);
 		grid.getProperties().put("showRowLines", true);
@@ -136,7 +135,7 @@ public class JReportTemplate {
 		// @formatter:on
 		return gpdfTemplate;
 	}
-	
+
 	public String genDefaultGexcelTemplate() {
 		// @formatter:off
 		String gexcelTemplate = "\n"+
@@ -156,7 +155,7 @@ public class JReportTemplate {
 //        "drb.oddRowBackgroundStyle = JReportStyles.oddRowStyle\n"+
 //        "drb.printBackgroundOnOddRows = true\n"+
         "drb.setWhenNoData(\"Sem registros na base de dados.\", null)\n"+
-//        "drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
+        "drb.setDefaultStyles(JReportStyles.titleStyle, JReportStyles.subtitleStyle, JReportStyles.columnHeaderStyle, JReportStyles.columnDetailStyle)\n"+
 //		"drb.addFirstPageImageBanner(new ClassPathResource(\"BOOT-INF/brasao-republica-report-header.png\").getPath(), new Integer(90), new Integer(40), ImageBanner.ALIGN_CENTER, ImageScaleMode.REAL_SIZE  );\n"+
 //		"drb.addAutoText(CREATED_AT, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_LEFT, 200, JReportStyles.footerTextStyle)\n"+
 //		"drb.addAutoText(AutoText.AUTOTEXT_PAGE_X, AutoText.POSITION_FOOTER, AutoText.ALIGNMENT_RIGHT, 10,30, JReportStyles.footerTextStyle);\n"+
