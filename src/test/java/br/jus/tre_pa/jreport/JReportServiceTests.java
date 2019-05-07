@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.ByteStreams;
 
-import br.jus.tre_pa.datafilter.config.DataFilterConfiguration;
+import br.jus.tre_pa.jfilter.config.FilterConfiguration;
 import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.FooRepository;
@@ -26,7 +26,7 @@ import br.jus.tre_pa.jreport.service.JReportService;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@SpringBootTest(classes = { JReportTestApp.class, JReportTemplate.class, JReportService.class, DataFilterConfiguration.class }, properties = "logging.level.br=debug")
+@SpringBootTest(classes = { JReportTestApp.class, JReportTemplate.class, JReportService.class, FilterConfiguration.class }, properties = "logging.level.br=debug")
 public class JReportServiceTests {
 
 	@Autowired
@@ -50,7 +50,7 @@ public class JReportServiceTests {
 		for (int i = 1; i < 100; i++) {
 			Foo foo = new Foo();
 			foo.setId(Long.valueOf(i));
-			foo.setName("Fulano"+i);
+			foo.setName("Fulano" + i);
 			entityManager.persist(foo);
 		}
 
@@ -80,14 +80,14 @@ public class JReportServiceTests {
 
 		fooRepository.deleteAll();
 	}
-	
+
 	@Test
 	@Transactional
 	public void genExcelTest() throws IOException {
 		for (int i = 1; i < 100; i++) {
 			Foo foo = new Foo();
 			foo.setId(Long.valueOf(i));
-			foo.setName("Fulano"+i);
+			foo.setName("Fulano" + i);
 			entityManager.persist(foo);
 		}
 

@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.jus.tre_pa.datafilter.Filterable;
-import br.jus.tre_pa.datafilter.rest.AbstractCrudRest;
+import br.jus.tre_pa.jfilter.Filterable;
+import br.jus.tre_pa.jfilter.rest.AbstractCrudRest;
 import br.jus.tre_pa.jreport.JReportTemplate;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.JReportRepository;

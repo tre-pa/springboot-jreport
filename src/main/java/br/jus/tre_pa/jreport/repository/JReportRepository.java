@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import br.jus.tre_pa.datafilter.jpa.DataFilterRepository;
+import br.jus.tre_pa.jfilter.jpa.FilterRepository;
 import br.jus.tre_pa.jreport.domain.JReport;
 
 @Repository
-public interface JReportRepository extends JpaRepository<JReport, Long>, JpaSpecificationExecutor<JReport>, DataFilterRepository<JReport> {
+public interface JReportRepository extends JpaRepository<JReport, Long>, JpaSpecificationExecutor<JReport>, FilterRepository<JReport> {
 
 	@Query("select distinct r.category from JReport r")
 	Page<String> findAllCategories(Pageable pageable);
