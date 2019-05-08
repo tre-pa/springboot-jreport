@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.ByteStreams;
 
-import br.jus.tre_pa.jfilter.config.FilterConfiguration;
+import br.jus.tre_pa.jfilter.config.SqlContextConfiguration;
 import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.FooRepository;
@@ -26,7 +26,7 @@ import br.jus.tre_pa.jreport.service.JReportService;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@SpringBootTest(classes = { JReportTestApp.class, JReportTemplate.class, JReportService.class, FilterConfiguration.class }, properties = "logging.level.br=debug")
+@SpringBootTest(classes = { JReportTestApp.class, JReportTemplate.class, JReportService.class, SqlContextConfiguration.class }, properties = "logging.level.br=debug")
 public class JReportServiceTests {
 
 	@Autowired
