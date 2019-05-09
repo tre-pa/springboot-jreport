@@ -1,4 +1,4 @@
-package br.jus.tre_pa.jreport;
+package br.jus.tre_pa.jreport.helper;
 
 import java.util.ArrayList;
 import java.util.List;

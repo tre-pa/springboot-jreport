@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.jus.tre_pa.jfilter.Filterable;
-import br.jus.tre_pa.jfilter.Page;
-import br.jus.tre_pa.jfilter.Payload;
+import br.jus.tre_pa.jfilter.core.Filterable;
+import br.jus.tre_pa.jfilter.core.Page;
+import br.jus.tre_pa.jfilter.core.Payload;
 import br.jus.tre_pa.jfilter.rest.AbstractCrudRest;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.JReportRepository;

@@ -20,6 +20,7 @@ import com.google.common.io.ByteStreams;
 import br.jus.tre_pa.jfilter.config.SqlContextConfiguration;
 import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
+import br.jus.tre_pa.jreport.helper.JReportTemplate;
 import br.jus.tre_pa.jreport.repository.FooRepository;
 import br.jus.tre_pa.jreport.repository.JReportRepository;
 import br.jus.tre_pa.jreport.service.JReportService;
