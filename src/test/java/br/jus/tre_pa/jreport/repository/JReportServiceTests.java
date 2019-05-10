@@ -1,4 +1,4 @@
-package br.jus.tre_pa.jreport;
+package br.jus.tre_pa.jreport.repository;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.ByteStreams;
 
-import br.jus.tre_pa.jfilter.config.SqlContextConfiguration;
+import br.jus.tre_pa.jfilter.JFilterModuleConfiguration;
+import br.jus.tre_pa.jreport.JReportModuleConfiguration;
 import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.helper.JReportTemplate;
-import br.jus.tre_pa.jreport.repository.FooRepository;
-import br.jus.tre_pa.jreport.repository.JReportRepository;
 import br.jus.tre_pa.jreport.service.JReportService;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@SpringBootTest(classes = { JReportTestApp.class, JReportTemplate.class, JReportService.class, SqlContextConfiguration.class }, properties = "logging.level.br=debug")
+@SpringBootTest(classes = { JReportModuleConfiguration.class, JFilterModuleConfiguration.class })
 public class JReportServiceTests {
 
 	@Autowired
@@ -80,6 +80,8 @@ public class JReportServiceTests {
 		fos.close();
 
 		fooRepository.deleteAll();
+
+		Assert.assertTrue(true);
 	}
 
 	@Test
