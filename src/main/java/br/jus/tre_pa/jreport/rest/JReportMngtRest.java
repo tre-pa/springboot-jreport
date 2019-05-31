@@ -3,7 +3,6 @@ package br.jus.tre_pa.jreport.rest;
 import java.util.Map;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +35,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 
 	@Autowired
 	private JReportService jreportService;
-	
+
 	@Autowired
 	private JReportTemplate template;
 
@@ -54,7 +51,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	}
 
 	@Override
-	protected JReport insert(@RequestBody @Valid JReport jReport) {
+	protected JReport insert(JReport jReport) {
 		return jreportService.insert(jReport);
 	}
 
@@ -65,7 +62,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return Entidade gerenciada.
 	 */
 	@Override
-	protected JReport update(@PathVariable Long id, @RequestBody @Valid JReport jReport) {
+	protected JReport update(Long id, JReport jReport) {
 		if (!this.getRepository().existsById(id)) throw new EntityNotFoundException("Relatório não encontrado: Id=${id}");
 		return jreportService.update(jReport);
 	}
