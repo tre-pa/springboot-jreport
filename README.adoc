@@ -1,0 +1,12 @@
+= springboot-jreport
+
+== Como usar?
+
+[source, xml]
+----
+<dependency>
+	<groupId>br.jus.tre_pa.jreport</groupId>
+	<artifactId>springboot-jreport</artifactId>
+	<version>1.0.0</version>
+</dependency>
+----
