@@ -8,7 +8,7 @@
 		</parent> -->
 	<groupId>br.jus.tre_pa.jreport</groupId>
 	<artifactId>springboot-jreport</artifactId>
-	<version>1.0.0</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>springboot-jreport</name>
 	<description>Framework de relatório para SpringBoot</description>
 
@@ -105,7 +105,15 @@
 			<artifactId>jasperreports-fonts</artifactId>
 			<version>6.9.0</version>
 		</dependency>
-
+		
+		<!-- Driver Oracle JDBC -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/BOOT-INF/lib/ojdbc6-11.2.0.3.0.jar</systemPath>
+		</dependency>
 
 	</dependencies>
 

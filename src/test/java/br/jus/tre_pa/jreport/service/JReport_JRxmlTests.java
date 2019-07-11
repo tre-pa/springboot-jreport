@@ -27,7 +27,6 @@ import com.google.common.io.CharStreams;
 
 import br.jus.tre_pa.jfilter.JFilterModuleConfiguration;
 import br.jus.tre_pa.jreport.JReportModuleConfiguration;
-import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.repository.FooRepository;
 import br.jus.tre_pa.jreport.types.JReportGrid;
@@ -53,18 +52,17 @@ public class JReport_JRxmlTests {
 	@Test
 	@Transactional
 	public void genPdfTest() throws IOException {
-		for (int i = 1; i < 10; i++) {
-			Foo foo = new Foo();
-			foo.setId(Long.valueOf(i));
-			foo.setName("Fulano" + i);
-			entityManager.persist(foo);
-		}
-
-		entityManager.flush();
+//		for (int i = 1; i < 10; i++) {
+//			Foo foo = new Foo();
+//			foo.setId(Long.valueOf(i));
+//			foo.setName("Fulano" + i);
+//			entityManager.persist(foo);
+//		}
+//
+//		entityManager.flush();
 
 		ClassPathResource resource = new ClassPathResource("br/jus/tre_pa/jreport/report1.jrxml");
 		String jrxml = CharStreams.toString(new InputStreamReader(resource.getInputStream()));
-
 		JReport report = new JReport(jrxml);
 		report.setCreatedAt(LocalDateTime.now());
 		report.setTitle("Relatório JRXML");
@@ -78,6 +76,7 @@ public class JReport_JRxmlTests {
 		entityManager.flush();
 
 		Map<String, Object> params = new HashMap<>();
+		params.put("created_by", "Fulano de Tal");
 
 		ByteArrayInputStream bais = reportService.genGpdf(report, params);
 		byte[] buffer = ByteStreams.toByteArray(bais);

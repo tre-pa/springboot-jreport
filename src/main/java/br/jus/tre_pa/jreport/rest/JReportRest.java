@@ -50,6 +50,7 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 	 * @return
 	 */
 	@PostMapping("/{id}/datasource")
+	@Deprecated
 	public ResponseEntity<Page<List<Map<String, Object>>>> executeSQL(@PathVariable Long id, Pageable pageable, @RequestBody(required = false) Payload payload) {
 		JReport jreport = getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 		return ResponseEntity.ok(jreportService.executeSQLPageable(jreport.getSql(), pageable, payload));

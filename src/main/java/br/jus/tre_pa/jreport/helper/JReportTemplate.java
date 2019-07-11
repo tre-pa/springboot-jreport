@@ -21,6 +21,7 @@ import br.jus.tre_pa.jreport.types.JReportGrid;
  *
  */
 @Component
+@Deprecated
 public class JReportTemplate {
 
 	@Autowired
@@ -54,7 +55,7 @@ public class JReportTemplate {
 	 */
 	public JReportGrid genDefaultGridTemplate(String sql) {
 		JReportGrid grid = new JReportGrid();
-		grid.setColumns(this.genDefaultColumnsTemplate(sql));
+		grid.setColumns(genDefaultColumnsTemplate(sql));
 
 		grid.getProperties().put("wordWrapEnabled", true);
 		grid.getProperties().put("showBorders", true);

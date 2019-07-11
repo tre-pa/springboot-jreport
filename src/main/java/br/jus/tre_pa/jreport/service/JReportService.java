@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -105,6 +104,7 @@ public class JReportService {
 	 * @param id
 	 * @return
 	 */
+	@Deprecated
 	public Page<List<Map<String, Object>>> executeSQLPageable(String sql, Pageable pageable, Payload payload) {
 		// @formatter:off
 		org.springframework.data.domain.Page<List<Map<String, Object>>> page = sqlContext.selectFrom(sql)
@@ -124,6 +124,7 @@ public class JReportService {
 	 * @param id
 	 * @return
 	 */
+	@Deprecated
 	public List<Aggregation> executeSQLAgg(String sql, Payload payload) {
 		return sqlContext.aggregation(sql, payload);
 	}
@@ -136,6 +137,7 @@ public class JReportService {
 	 * @param filter Informação de filtragem.
 	 * @return
 	 */
+	@Deprecated
 	public List<Map<String, Object>> executeSQL(String sql, Sort sort, Filterable filter) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		if (Objects.nonNull(filter)) {
@@ -245,7 +247,6 @@ public class JReportService {
 	 * @return
 	 */
 	@SneakyThrows
-	@Transactional
 	public ByteArrayInputStream genGpdf(JReport jreport, Map<String, Object> params) {
 		InputStream targetStream = new ByteArrayInputStream(jreport.getJrxml().getBytes());
 		JasperReport jasperReport = JasperCompileManager.compileReport(targetStream);

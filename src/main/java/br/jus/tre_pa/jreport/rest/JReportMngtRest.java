@@ -47,7 +47,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 */
 	@GetMapping("/categories")
 	public ResponseEntity<Page<String>> findAllCategories(Pageable pageable) {
-		return ResponseEntity.ok().body(this.getRepository().findAllCategories(pageable));
+		return ResponseEntity.ok().body(getRepository().findAllCategories(pageable));
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 */
 	@Override
 	protected JReport update(Long id, JReport jReport) {
-		if (!this.getRepository().existsById(id)) throw new EntityNotFoundException("Relatório não encontrado: Id=${id}");
+		if (!getRepository().existsById(id)) throw new EntityNotFoundException("Relatório não encontrado: Id=${id}");
 		return jreportService.update(jReport);
 	}
 
@@ -74,6 +74,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * @return
 	 */
 	@PostMapping("/preview/datasource")
+	@Deprecated
 	public ResponseEntity<?> previewSQL(@RequestBody Map<String, Object> params, Pageable pageable) {
 		if (StringUtils.isEmpty((CharSequence) params.get("sql"))) throw new IllegalArgumentException("SQL não definida na requisição.");
 		return ResponseEntity.ok(jreportService.executeSQL((String) params.get("sql"), pageable.getSort(), (Filterable) params.get("filter")));
@@ -129,6 +130,7 @@ public class JReportMngtRest extends AbstractCrudRest<JReport, Long, JReportSpec
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	@GetMapping("/gpdf/template")
 	public ResponseEntity<?> genDefaultGPDFTemplate() {
 		return ResponseEntity.ok(template.genDefaultGpdfTemplate());

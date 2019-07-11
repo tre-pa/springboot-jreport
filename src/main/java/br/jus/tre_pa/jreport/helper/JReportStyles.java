@@ -10,8 +10,12 @@ import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
 import ar.com.fdvs.dj.domain.constants.Transparency;
 import ar.com.fdvs.dj.domain.constants.VerticalAlign;
 
+@Deprecated
 public class JReportStyles {
-	
+
+	/// @formatter:off
+ 
+
 	public static Style titleStyle = new StyleBuilder(true)
 		.setHorizontalAlign(HorizontalAlign.CENTER)
 		.setFont(new Font(14, Font._FONT_TIMES_NEW_ROMAN, true))
@@ -129,4 +133,5 @@ public class JReportStyles {
 	public static Style footerTextStyle = new StyleBuilder(true)
 			.setFont(Font.TIMES_NEW_ROMAN_SMALL)
 			.build();
+	// @formatter:on
 }

@@ -51,12 +51,14 @@ public class JReport {
 	 */
 	@Column(nullable = false, unique = true)
 	@NotBlank
+	@Deprecated
 	private String title;
 
 	/**
 	 * Subtítulo do relatório.
 	 */
 	@Column
+	@Deprecated
 	private String subtitle;
 
 	/**
@@ -87,6 +89,7 @@ public class JReport {
 	@Column(name = "SQL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
+	@Deprecated
 	private String sql;
 
 	/**
@@ -105,6 +108,7 @@ public class JReport {
 	@Column(name = "GPDF", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
+	@Deprecated
 	private String gpdf;
 
 	/**
@@ -113,6 +117,7 @@ public class JReport {
 	@Column(name = "GEXCEL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
+	@Deprecated
 	private String gexcel;
 
 	/**

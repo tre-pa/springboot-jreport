@@ -3,20 +3,21 @@
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<queryString language="SQL">
-		<![CDATA[SELECT ID, name FROM foo]]>
+	<parameter name="created_by" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM RT_ROTA]]>
 	</queryString>
-	<field name="ID" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="ID" class="java.math.BigDecimal"/>
+	<field name="EDITABLE" class="java.math.BigDecimal"/>
+	<field name="ROTA_TYPE" class="java.lang.String"/>
+	<field name="ULTIMA_VISUALIZACAO_EM" class="oracle.sql.TIMESTAMP"/>
+	<field name="ULTIMA_VISUALIZACAO_POR" class="java.lang.String"/>
+	<field name="UNIDADE_ID" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="54" splitType="Stretch">
 			<staticText>
 				<reportElement x="137" y="10" width="281" height="20" uuid="2596ec12-cbb6-4ef4-8876-4fc1f3b2773f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -34,33 +35,34 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="35" splitType="Stretch"/>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="227" y="6" width="100" height="20" uuid="f15f7ecb-3d03-4ed8-a19e-582515b9af72"/>
+				<text><![CDATA[Relatório de Rotas]]></text>
+			</staticText>
+		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="61" splitType="Stretch">
+		<band height="31" splitType="Stretch">
 			<staticText>
-				<reportElement x="5" y="37" width="50" height="20" uuid="08e97c73-358f-484b-baf6-ffae7eaf2308"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Id]]></text>
+				<reportElement x="5" y="6" width="100" height="20" uuid="80c26570-a884-423e-9c01-04018c7e4034"/>
+				<text><![CDATA[ID]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="57" y="37" width="113" height="20" uuid="e326bdd4-d31b-47ba-8ef9-c12c84517aad"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Name]]></text>
+				<reportElement x="113" y="7" width="100" height="20" uuid="a813d0a9-3437-4f8b-b965-c98db6f36cc8"/>
+				<text><![CDATA[UNIDADE_ID]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
-			<textField hyperlinkType="None">
-				<reportElement x="5" y="3" width="50" height="20" uuid="106b0158-2a89-47bb-97a0-2b27162e9212"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{ID}]]></textFieldExpression>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="5" y="5" width="100" height="20" uuid="735f9712-6a48-47f3-9174-37768b6b6ffb"/>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
 			</textField>
-			<textField hyperlinkType="None">
-				<reportElement x="57" y="3" width="113" height="20" uuid="1339bd68-748b-45d7-91ae-af2e85ff4521"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+			<textField>
+				<reportElement x="113" y="5" width="100" height="20" uuid="dd035603-3599-41ec-ac76-68a0e5fa95f0"/>
+				<textFieldExpression><![CDATA[$F{UNIDADE_ID}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -68,7 +70,13 @@
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="342" y="11" width="187" height="20" uuid="3457109e-99cc-47e0-ab5d-91103ef9d3a8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{created_by}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageFooter>
 	<summary>
 		<band height="42" splitType="Stretch"/>
