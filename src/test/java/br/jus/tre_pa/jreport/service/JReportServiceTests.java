@@ -1,4 +1,4 @@
-package br.jus.tre_pa.jreport.repository;
+package br.jus.tre_pa.jreport.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,7 +23,8 @@ import br.jus.tre_pa.jreport.JReportModuleConfiguration;
 import br.jus.tre_pa.jreport.domain.Foo;
 import br.jus.tre_pa.jreport.domain.JReport;
 import br.jus.tre_pa.jreport.helper.JReportTemplate;
-import br.jus.tre_pa.jreport.service.JReportService;
+import br.jus.tre_pa.jreport.repository.FooRepository;
+import br.jus.tre_pa.jreport.repository.JReportRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

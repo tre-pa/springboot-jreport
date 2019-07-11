@@ -51,20 +51,22 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 	 */
 	@PostMapping("/{id}/datasource")
 	public ResponseEntity<Page<List<Map<String, Object>>>> executeSQL(@PathVariable Long id, Pageable pageable, @RequestBody(required = false) Payload payload) {
-		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
+		JReport jreport = getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 		return ResponseEntity.ok(jreportService.executeSQLPageable(jreport.getSql(), pageable, payload));
 	}
 
 	/**
-	 * Retorna o binário (pdf) do relatório. o endpoint aceita
+	 * Endpoint de geração de relatório PDF com sort e filtragem de dados.
 	 * 
-	 * @param id Identificador do relatório.
+	 * @param id     Identificador do relatório.
+	 * @param sort
+	 * @param filter
 	 * @return InputStreamResource do pdf.
 	 */
 	@PostMapping(path = "/{id}/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<?> genGPDF(@PathVariable Long id, Sort sort, @RequestBody(required = false) Filterable filter) {
 		log.info("Iniciando geração do PDF para o relatório id={}", id);
-		JReport jreport = this.getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
+		JReport jreport = getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Disposition", String.format("inline; filename=%s.pdf", jreport.getTitle()));
@@ -77,4 +79,29 @@ public class JReportRest extends AbstractCrudRest<JReport, Long, JReportSpecific
 				.body(new InputStreamResource(bais));
 		// @formatter:on
 	}
+
+	/**
+	 * Endpoint de geração de relatório PDF com parametros.
+	 * 
+	 * @param id     Id do relatório.
+	 * @param params Parametros
+	 * @return
+	 */
+	@PostMapping(path = "/{id}/p/pdf", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<?> genGPDF(@PathVariable Long id, @RequestBody Map<String, Object> params) {
+		log.info("Iniciando geração do PDF para o relatório id={}", id);
+		JReport jreport = getRepository().findById(id).orElseThrow(() -> new EntityNotFoundException("Relatório não encontrado: Id=" + id));
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", String.format("inline; filename=%s.pdf", jreport.getTitle()));
+		ByteArrayInputStream bais = jreportService.genGpdf(jreport, params);
+		// @formatter:off
+		return ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.APPLICATION_PDF)
+				.body(new InputStreamResource(bais));
+		// @formatter:on
+	}
+
 }

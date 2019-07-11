@@ -2,6 +2,7 @@ package br.jus.tre_pa.jreport.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,12 +13,15 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,8 +43,11 @@ import groovy.lang.GroovyShell;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.ListOfArrayDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -53,6 +60,9 @@ public class JReportService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Autowired
 	private JReportRepository jreportRepository;
@@ -75,7 +85,7 @@ public class JReportService {
 		if (jreport.getGrid() == null) jreport.setGrid(template.genDefaultGridTemplate(jreport.getSql()));
 		if (StringUtils.isEmpty(jreport.getGpdf())) jreport.setGpdf(template.genDefaultGpdfTemplate());
 		if (StringUtils.isEmpty(jreport.getGexcel())) jreport.setGexcel("excel");
-		return this.jreportRepository.save(jreport);
+		return jreportRepository.save(jreport);
 	}
 
 	/**
@@ -86,7 +96,7 @@ public class JReportService {
 	 */
 	public JReport update(JReport jreport) {
 		jreport.setLastUpdateAt(LocalDateTime.now());
-		return this.jreportRepository.save(jreport);
+		return jreportRepository.save(jreport);
 	}
 
 	/**
@@ -103,7 +113,7 @@ public class JReportService {
 				.limit(pageable)
 				.fetchMaps();
 		// @formatter:on
-		List<Aggregation> aggregations = this.executeSQLAgg(sql, payload);
+		List<Aggregation> aggregations = executeSQLAgg(sql, payload);
 		sqlContext.clear();
 		return new Page<List<Map<String, Object>>>(page, aggregations);
 	}
@@ -210,19 +220,41 @@ public class JReportService {
 		JasperPrint jp = DynamicJasperHelper.generateJasperPrint(dynamicReport, new ClassicLayoutManager(), ds);
 		JRXlsExporter exporter = new JRXlsExporter();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
+
 		exporter.setExporterInput(new SimpleExporterInput(jp));
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos));
-		
+
 		SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
-        xlsReportConfiguration.setOnePagePerSheet(false);
-        xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
-        xlsReportConfiguration.setDetectCellType(false);
-        xlsReportConfiguration.setWhitePageBackground(false);
-        exporter.setConfiguration(xlsReportConfiguration);
-        
-        exporter.exportReport();
-		
+		xlsReportConfiguration.setOnePagePerSheet(false);
+		xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
+		xlsReportConfiguration.setDetectCellType(false);
+		xlsReportConfiguration.setWhitePageBackground(false);
+		exporter.setConfiguration(xlsReportConfiguration);
+
+		exporter.exportReport();
+
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		return bais;
+	}
+
+	/**
+	 * Geração de relatório parametrizado baseado em JRXML.
+	 * 
+	 * @param jreport
+	 * @param params
+	 * @return
+	 */
+	@SneakyThrows
+	@Transactional
+	public ByteArrayInputStream genGpdf(JReport jreport, Map<String, Object> params) {
+		InputStream targetStream = new ByteArrayInputStream(jreport.getJrxml().getBytes());
+		JasperReport jasperReport = JasperCompileManager.compileReport(targetStream);
+		log.info("Relatório '{}' compilado com sucesso.", jreport.getTitle());
+
+		JasperPrint jp = JasperFillManager.fillReport(jasperReport, params, dataSource.getConnection());
+		log.debug("JasperFillManager.fillReport realizado com sucesso.");
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		JasperExportManager.exportReportToPdfStream(jp, baos);
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		return bais;
 	}

@@ -87,7 +87,6 @@ public class JReport {
 	@Column(name = "SQL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
-	@NotBlank
 	private String sql;
 
 	/**
@@ -100,7 +99,7 @@ public class JReport {
 	private JReportGrid grid;
 
 	/**
-	 * Código groovy do relatório em DynamicJasper.
+	 * Código groovy para PDF do relatório em DynamicJasper.
 	 * 
 	 */
 	@Column(name = "GPDF", nullable = false, columnDefinition = "blob")
@@ -108,10 +107,21 @@ public class JReport {
 	@Basic(fetch = FetchType.LAZY)
 	private String gpdf;
 
+	/**
+	 * Código groovy para Excel do relatório em DynamicJasper.
+	 */
 	@Column(name = "GEXCEL", nullable = false, columnDefinition = "blob")
 	@Convert(converter = StringToByteConverter.class)
 	@Basic(fetch = FetchType.LAZY)
 	private String gexcel;
+
+	/**
+	 * Xml de relatório Jasper Report.
+	 */
+	@Column(name = "JRXML", nullable = false, columnDefinition = "blob")
+	@Convert(converter = StringToByteConverter.class)
+	@Basic(fetch = FetchType.LAZY)
+	private String jrxml;
 
 	/**
 	 * Categoria do relatório.
@@ -139,6 +149,11 @@ public class JReport {
 		this.sql = sql;
 		this.grid = grid;
 		this.gpdf = gpdf;
+	}
+
+	public JReport(String jrxml) {
+		super();
+		this.jrxml = jrxml;
 	}
 
 }
